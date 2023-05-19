@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ClasseRepository::class)]
 #[ApiResource]
@@ -19,9 +20,13 @@ class Classe
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom de la classe ne peut pas être vide')]
+    #[Assert\Length(min: 3, max: 255,minMessage: 'Le nom de la classe doit contenir au moins 3 caractères', maxMessage: 'Le nom de la classe ne peut pas contenir plus de 255 caractères')]
+    #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'Le nom de la classe ne peut contenir que des lettres')]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'La description de la classe ne peut pas être vide')]
     private ?string $description = null;
 
     #[ORM\OneToMany(mappedBy: 'classe', targetEntity: PersonnageClasse::class)]
