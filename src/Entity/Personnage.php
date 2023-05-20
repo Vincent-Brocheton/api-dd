@@ -104,12 +104,16 @@ class Personnage
     #[ORM\ManyToMany(targetEntity: Objet::class, mappedBy: 'personnages')]
     private Collection $objets;
 
+    #[ORM\ManyToMany(targetEntity: Don::class, mappedBy: 'personnage')]
+    private Collection $dons;
+
     public function __construct()
     {
         $this->personnageClasses = new ArrayCollection();
         $this->competencePersonnages = new ArrayCollection();
         $this->personnageSorts = new ArrayCollection();
         $this->objets = new ArrayCollection();
+        $this->dons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -529,6 +533,33 @@ class Personnage
     {
         if ($this->objets->removeElement($objet)) {
             $objet->removePersonnage($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Don>
+     */
+    public function getDons(): Collection
+    {
+        return $this->dons;
+    }
+
+    public function addDon(Don $don): self
+    {
+        if (!$this->dons->contains($don)) {
+            $this->dons->add($don);
+            $don->addPersonnage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDon(Don $don): self
+    {
+        if ($this->dons->removeElement($don)) {
+            $don->removePersonnage($this);
         }
 
         return $this;
